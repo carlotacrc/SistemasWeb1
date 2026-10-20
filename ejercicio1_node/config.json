@@ -1,0 +1,9 @@
+{
+  "intervaloSegundos": 5,
+  "metricas": {
+    "cpu": true,
+    "memoria": true,
+    "uptimeSistema": true,
+    "uptimeNode": true
+  }
+}
