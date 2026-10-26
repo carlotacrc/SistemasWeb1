@@ -1,0 +1,12 @@
+sol
+luna
+estrella
+arbol
+montaña
+rio
+cielo
+camino
+mar
+viento
+bosque
+puerta
