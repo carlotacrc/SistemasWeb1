@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+  <body>
+    <nav style="background: #f4f4f4; padding: 12px 16px; margin-bottom: 20px;">
+      <strong style="margin-right: 15px;">Navbar</strong>
+      <a href="/" style="margin-right: 10px;">Home</a>
+      <a href="/login">Login</a>
+    </nav>
+
+    <h1><%= title %></h1>
+    <p>Welcome to Login</p>
+
+    <form action="/" method="GET" style="margin-top: 20px; display: flex; align-items: center; gap: 8px;">
+      <label for="username">Username:</label>
+      <input type="text" id="username" name="username" required />
+
+      <label for="password">Password:</label>
+      <input type="password" id="password" name="password" required />
+
+      <button type="submit" style="cursor: pointer;">Submit</button>
+    </form>
+  </body>
+</html>
