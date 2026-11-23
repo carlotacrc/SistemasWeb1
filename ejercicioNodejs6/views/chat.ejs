@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <style>
+      #mensajes { list-style: none; padding: 10px; border: 1px solid #ccc; height: 300px; overflow-y: auto; background: #fafafa; }
+      #mensajes li { padding: 6px 8px; border-bottom: 1px solid #eee; }
+      .hora { color: #888; font-size: 0.8em; }
+    </style>
+  </head>
+  <body>
+    <nav style="background: #f4f4f4; padding: 12px; margin-bottom: 20px;">
+      <a href="/">Inicio</a> |
+      <strong>Usuario: <%= user %></strong> |
+      <a href="/logout">Cerrar sesión</a>
+    </nav>
+
+    <h1><%= title %></h1>
+
+    <ul id="mensajes"></ul>
+
+    <form id="formChat" style="margin-top: 10px; display: flex; gap: 8px;">
+      <input id="inputMensaje" autocomplete="off" placeholder="Escribe un mensaje..." style="flex: 1; padding: 8px;" required />
+      <button type="submit" style="padding: 8px 16px; cursor: pointer;">Enviar</button>
+    </form>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      const socket = io();
+      const form = document.getElementById('formChat');
+      const input = document.getElementById('inputMensaje');
+      const listaMensajes = document.getElementById('mensajes');
+
+      function agregarMensajeAlDOM(msg) {
+        const li = document.createElement('li');
+        li.innerHTML = `<span class="hora">[${msg.hora}]</span> <strong>${msg.usuario}:</strong> ${msg.texto}`;
+        listaMensajes.appendChild(li);
+        listaMensajes.scrollTop = listaMensajes.scrollHeight;
+      }
+
+      socket.on('historial', (mensajes) => {
+        listaMensajes.innerHTML = '';
+        mensajes.forEach(agregarMensajeAlDOM);
+      });
+
+      socket.on('chat message', (msg) => {
+        agregarMensajeAlDOM(msg);
+      });
+
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        if (input.value.trim()) {
+          socket.emit('chat message', input.value);
+          input.value = '';
+        }
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,92 @@
+#!/usr/bin/env node
+
+var app = require('../app');
+var debug = require('debug')('ejercicionodejs6:server');
+var http = require('http');
+
+var port = normalizePort(process.env.PORT || '3000');
+app.set('port', port);
+
+var server = http.createServer(app);
+
+// CONFIGURACIÓN SOCKET.IO
+const { Server } = require('socket.io');
+const io = new Server(server);
+
+// Compartir sesión de Express con Socket.IO
+const sessionMiddleware = app.get('sessionMiddleware');
+io.engine.use(sessionMiddleware);
+
+// Histórico de los últimos 20 mensajes
+const historialMensajes = [];
+
+io.on('connection', (socket) => {
+  const req = socket.request;
+  const usuario = req.session ? req.session.user : null;
+
+  // Bloquear acceso si no hay sesión iniciada
+  if (!usuario) {
+    socket.disconnect();
+    return;
+  }
+
+  console.log(`Usuario conectado al chat: ${usuario}`);
+
+  // Enviar histórico al conectarse
+  socket.emit('historial', historialMensajes);
+
+  // Escuchar nuevos mensajes
+  socket.on('chat message', (texto) => {
+    const mensajeCompleto = {
+      usuario: usuario,
+      texto: texto,
+      hora: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    };
+
+    historialMensajes.push(mensajeCompleto);
+    if (historialMensajes.length > 20) {
+      historialMensajes.shift();
+    }
+
+    io.emit('chat message', mensajeCompleto);
+  });
+
+  socket.on('disconnect', () => {
+    console.log(`Usuario desconectado: ${usuario}`);
+  });
+});
+// FIN CONFIGURACIÓN SOCKET.IO
+
+server.listen(port);
+server.on('error', onError);
+server.on('listening', onListening);
+
+function normalizePort(val) {
+  var port = parseInt(val, 10);
+  if (isNaN(port)) return val;
+  if (port >= 0) return port;
+  return false;
+}
+
+function onError(error) {
+  if (error.syscall !== 'listen') throw error;
+  var bind = typeof port === 'string' ? 'Pipe ' + port : 'Port ' + port;
+  switch (error.code) {
+    case 'EACCES':
+      console.error(bind + ' requires elevated privileges');
+      process.exit(1);
+      break;
+    case 'EADDRINUSE':
+      console.error(bind + ' is already in use');
+      process.exit(1);
+      break;
+    default:
+      throw error;
+  }
+}
+
+function onListening() {
+  var addr = server.address();
+  var bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port;
+  debug('Listening on ' + bind);
+}

@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+  <body>
+    <nav style="background: #f4f4f4; padding: 12px; margin-bottom: 20px;">
+      <a href="/">Inicio</a>
+    </nav>
+
+    <h1><%= title %></h1>
+    <form action="/login" method="POST">
+      <label for="username">Nombre de usuario:</label>
+      <input type="text" id="username" name="username" required />
+      <button type="submit">Entrar</button>
+    </form>
+  </body>
+</html>

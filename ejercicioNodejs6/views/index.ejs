@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+  <body>
+    <nav style="background: #f4f4f4; padding: 12px; margin-bottom: 20px;">
+      <a href="/">Inicio</a> |
+      <% if (user) { %>
+        <a href="/chat">Ir al Chat</a> |
+        <a href="/logout">Cerrar sesión (<%= user %>)</a>
+      <% } else { %>
+        <a href="/login">Iniciar Sesión</a>
+      <% } %>
+    </nav>
+
+    <h1><%= title %></h1>
+    <% if (user) { %>
+      <p>Hola <strong><%= user %></strong>, ya tienes acceso al chat.</p>
+      <a href="/chat"><button style="padding: 8px 16px; cursor: pointer;">Entrar al Chat</button></a>
+    <% } else { %>
+      <p>Debes iniciar sesión para entrar al chat.</p>
+      <a href="/login"><button style="padding: 8px 16px; cursor: pointer;">Login</button></a>
+    <% } %>
+  </body>
+</html>
